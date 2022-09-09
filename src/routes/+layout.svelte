@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { enhanceAndInvalidate } from '$lib/enhance';
+	import { applyAction, enhance } from '$app/forms';
 	import { page } from '$app/stores';
 	import { setupSupabase } from '$lib/supabase/client';
 	import { supabaseClient } from '$lib/db';
+	import { invalidateAll } from '$app/navigation';
 
 	setupSupabase({
 		supabaseClient
@@ -12,7 +13,17 @@
 <nav>
 	<a href="/">Home</a>
 	{#if $page.data.session.user}
-		<form action="/logout" method="post" use:enhanceAndInvalidate>
+		<form
+			action="/logout"
+			method="post"
+			use:enhance={() =>
+				async ({ result }) => {
+					if (result.type === 'redirect' || result.type === 'success') {
+						await invalidateAll();
+					}
+					await applyAction(result);
+				}}
+		>
 			<button type="submit">Sign out</button>
 		</form>
 	{:else}
