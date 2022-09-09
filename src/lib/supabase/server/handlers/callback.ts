@@ -1,10 +1,27 @@
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
-import type { Handle } from '@sveltejs/kit';
+import type { Handle, RequestEvent } from '@sveltejs/kit';
 import { deleteSession, saveSession } from '../helpers';
 
 interface PostBody {
 	event: AuthChangeEvent;
 	session: Session | null;
+}
+
+interface PostBody {
+	event: AuthChangeEvent;
+	session: Session | null;
+}
+
+export async function handleCallbackSession({ cookies, request }: RequestEvent) {
+	const { event: sessionEvent, session }: PostBody = await request.json();
+
+	if (sessionEvent === 'SIGNED_IN' && session) {
+		saveSession(cookies, session);
+	} else if (sessionEvent === 'SIGNED_OUT') {
+		deleteSession(cookies);
+	}
+
+	return new Response(null, { status: 204 });
 }
 
 export default function callback(): Handle {
@@ -13,22 +30,13 @@ export default function callback(): Handle {
 			return resolve(event);
 		}
 
-		const { request, cookies } = event;
-		if (request.method !== 'POST') {
+		if (event.request.method !== 'POST') {
 			const headers = new Headers({
 				Allow: 'POST'
 			});
 			return new Response('Method Not Allowed', { headers, status: 405 });
 		}
 
-		const { event: sessionEvent, session }: PostBody = await request.json();
-
-		if (sessionEvent === 'SIGNED_IN' && session) {
-			saveSession(cookies, session);
-		} else if (sessionEvent === 'SIGNED_OUT') {
-			deleteSession(cookies);
-		}
-
-		return new Response(null, { status: 200 });
+		return handleCallbackSession(event);
 	};
 }

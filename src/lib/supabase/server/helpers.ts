@@ -1,8 +1,7 @@
-import type { RequestEvent } from '.svelte-kit/types/src/routes/signin/$types';
-import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
+import type { Session } from '@supabase/supabase-js';
 import type { Cookies } from '@sveltejs/kit';
-import { getSingleton } from '../singleton';
 import type { CookieOptions } from '../types';
+import { getSingleton } from '../singleton';
 
 export function saveSession(cookies: Cookies, session: Session) {
 	const cookie_options = getSingleton('cookieOptions') as CookieOptions;
@@ -27,21 +26,4 @@ export function deleteSession(cookies: Cookies) {
 			maxAge: -1
 		});
 	});
-}
-
-interface PostBody {
-	event: AuthChangeEvent;
-	session: Session | null;
-}
-
-export async function handleCallbackSession({ cookies, request }: RequestEvent) {
-	const { event: sessionEvent, session }: PostBody = await request.json();
-
-	if (sessionEvent === 'SIGNED_IN' && session) {
-		saveSession(cookies, session);
-	} else if (sessionEvent === 'SIGNED_OUT') {
-		deleteSession(cookies);
-	}
-
-	return new Response(null, { status: 204 });
 }
