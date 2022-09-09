@@ -4,7 +4,6 @@ specifiers:
   '@supabase/supabase-js': ^1.35.6
   '@sveltejs/adapter-auto': 1.0.0-next.72
   '@sveltejs/kit': 1.0.0-next.480
-  '@types/cookie': ^0.5.1
   '@typescript-eslint/eslint-plugin': ^5.27.0
   '@typescript-eslint/parser': ^5.27.0
   eslint: ^8.16.0
@@ -27,7 +26,6 @@ dependencies:
 devDependencies:
   '@sveltejs/adapter-auto': 1.0.0-next.72
   '@sveltejs/kit': 1.0.0-next.480_svelte@3.50.1+vite@3.1.0
-  '@types/cookie': 0.5.1
   '@typescript-eslint/eslint-plugin': 5.36.2_2l2r3i3lm6jysqd4ac3ql4n2mm
   '@typescript-eslint/parser': 5.36.2_itqs5654cmlnjraw6gjzqacppi
   eslint: 8.23.0
@@ -319,10 +317,6 @@ packages:
       vite: 3.1.0
     transitivePeerDependencies:
       - supports-color
-    dev: true
-
-  /@types/cookie/0.5.1:
-    resolution: {integrity: sha512-COUnqfB2+ckwXXSFInsFdOAWQzCCx+a5hq2ruyj+Vjund94RJQd4LG2u9hnvJrTgunKAaax7ancBYlDrNYxA0g==}
     dev: true
 
   /@types/json-schema/7.0.11:

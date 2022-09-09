@@ -1,11 +1,10 @@
+import { deleteSession } from '$lib/supabase/server';
 import { redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 
 export const actions: Actions = {
 	async default({ cookies }) {
-		['sb-access-token', 'sb-refresh-token', 'sb-provider-token'].forEach((name) => {
-			cookies.delete(name);
-		});
+		deleteSession(cookies);
 		throw redirect(303, '/');
 	}
 };

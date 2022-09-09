@@ -1,13 +1,13 @@
 import type { Handle } from '@sveltejs/kit';
 import { decodeJwt } from 'jose';
-import type { CookieSerializeOptions } from 'cookie';
 import type { SupabaseClient, User } from '@supabase/supabase-js';
-import { TOKEN_REFRESH_MARGIN } from '../constants';
+import { COOKIE_OPTIONS, TOKEN_REFRESH_MARGIN } from '../../constants';
+import type { CookieOptions } from '../../types';
 
 interface Options {
 	supabaseClient: SupabaseClient;
 	tokenRefreshMargin?: number;
-	cookieOptions?: CookieSerializeOptions;
+	cookieOptions?: CookieOptions;
 }
 
 export default function session({
@@ -15,6 +15,8 @@ export default function session({
 	cookieOptions,
 	tokenRefreshMargin = TOKEN_REFRESH_MARGIN
 }: Options): Handle {
+	const cookie_options = { ...COOKIE_OPTIONS, ...cookieOptions };
+
 	return async ({ resolve, event }) => {
 		const { cookies, locals } = event;
 		try {
@@ -41,9 +43,9 @@ export default function session({
 				if (error || !data) {
 					throw error;
 				}
-				cookies.set('sb-access-token', data.access_token, cookieOptions);
+				cookies.set('sb-access-token', data.access_token, cookie_options);
 				if (data.refresh_token) {
-					cookies.set('sb-refresh-token', data.refresh_token, cookieOptions);
+					cookies.set('sb-refresh-token', data.refresh_token, cookie_options);
 				}
 				locals.user = { ...data.user, exp: data.expires_at } as User;
 				locals.accessToken = accessToken;

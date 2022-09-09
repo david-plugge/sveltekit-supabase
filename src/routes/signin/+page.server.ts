@@ -1,15 +1,7 @@
 import { supabaseClient } from '$lib/db';
 import { invalid, redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
-import type { CookieSerializeOptions } from 'cookie';
-
-const cookieOptions: CookieSerializeOptions = {
-	maxAge: 365 * 24 * 60 * 60,
-	path: '/',
-	sameSite: 'strict',
-	httpOnly: true,
-	secure: false
-};
+import { saveSession } from '$lib/supabase/server';
 
 export const actions: Actions = {
 	async signin({ request, cookies }) {
@@ -44,13 +36,7 @@ export const actions: Actions = {
 			});
 		}
 
-		if (data.access_token) {
-			cookies.set('sb-access-token', data.access_token, cookieOptions);
-		}
-		if (data.refresh_token) {
-			cookies.set('sb-refresh-token', data.refresh_token, cookieOptions);
-		}
-
+		saveSession(cookies, data);
 		throw redirect(303, '/');
 	},
 

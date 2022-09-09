@@ -1,29 +1,25 @@
-<script lang="ts">
-	import { applyAction, enhance } from '$app/forms';
-	import { page } from '$app/stores';
-	import { setupSupabase } from '$lib/supabase/client';
+<script lang="ts" context="module">
+	// this is needed to set the client instance
+	// must happen in module context to ensure it´s run before any load functions
 	import { supabaseClient } from '$lib/db';
-	import { invalidateAll } from '$app/navigation';
+	import { setupSupabase } from '$lib/supabase';
 
-	setupSupabase({
-		supabaseClient
-	});
+	setupSupabase(supabaseClient);
+</script>
+
+<script lang="ts">
+	import { page } from '$app/stores';
+	import { startSupabaseSessionSync, enhanceAndInvalidate } from '$lib/supabase';
+
+	// this sets up automatic token refreshing
+	startSupabaseSessionSync();
 </script>
 
 <nav>
 	<a href="/">Home</a>
 	{#if $page.data.session.user}
-		<form
-			action="/logout"
-			method="post"
-			use:enhance={() =>
-				async ({ result }) => {
-					if (result.type === 'redirect' || result.type === 'success') {
-						await invalidateAll();
-					}
-					await applyAction(result);
-				}}
-		>
+		<a href="/posts">Posts</a>
+		<form action="/logout" method="post" use:enhanceAndInvalidate>
 			<button type="submit">Sign out</button>
 		</form>
 	{:else}

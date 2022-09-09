@@ -1,14 +1,27 @@
+import { browser } from '$app/environment';
 import { invalidateAll } from '$app/navigation';
 import { page } from '$app/stores';
-import type { SupabaseClient, User } from '@supabase/supabase-js';
+import type { AuthChangeEvent, SupabaseClient, User } from '@supabase/supabase-js';
 import { onMount } from 'svelte';
+import { setSingleton, getSingleton } from './singleton';
 
 interface Options {
-	supabaseClient: SupabaseClient;
 	tokenRefreshMargin?: number;
 }
 
-export function setupSupabase({ supabaseClient, tokenRefreshMargin = 10 }: Options) {
+const HANDLE_EVENTS: AuthChangeEvent[] = ['SIGNED_IN', 'SIGNED_OUT'];
+
+export function setupSupabase(supabaseClient: SupabaseClient) {
+	if (browser) {
+		setSingleton('client', supabaseClient);
+	}
+}
+
+export function startSupabaseSessionSync({ tokenRefreshMargin = 10 }: Options = {}) {
+	if (!browser) {
+		return;
+	}
+	const supabaseClient = getSingleton('client') as SupabaseClient;
 	onMount(() => {
 		let timeout: ReturnType<typeof setTimeout> | null;
 		let expiresAt: number | undefined;
@@ -40,6 +53,8 @@ export function setupSupabase({ supabaseClient, tokenRefreshMargin = 10 }: Optio
 		});
 
 		const { data: subscription } = supabaseClient.auth.onAuthStateChange((event, session) => {
+			if (HANDLE_EVENTS.indexOf(event) === -1) return;
+
 			fetch('/api/auth/callback', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
