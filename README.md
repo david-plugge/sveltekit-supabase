@@ -15,6 +15,8 @@ Disable JavaScript and see that signin/signup/logout still works
 It uses the [`invalidateAll`](https://kit.svelte.dev/docs/modules#$app-navigation-invalidateall) method to refetch the session when the it´s about to expire or on signin/signout/etc.
 This makes sense since any data currently displayed may not belong to the user anymore.
 
+If you don´t care about non JS situations you can just ignore actions and use the auth methods on the supabaseClient instance, the session will always be synced to the server.
+
 ## Whats different
 
 - No need for a `SupaAuthHelper` component
