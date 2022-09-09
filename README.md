@@ -15,10 +15,17 @@ Disable JavaScript and see that signin/signup/logout still works
 It uses the [`invalidateAll`](https://kit.svelte.dev/docs/modules#$app-navigation-invalidateall) method to refetch the session when the it´s about to expire or on signin/signout/etc.
 This makes sense since any data currently displayed may not belong to the user anymore.
 
+## Whats different
+
+- No Svelte `SupaAuthHelper` component
+- still works when JS fails
+-
+
 ## Things to improve
 
 - move the callback into a hook (not sure why this doesn´t work, seems to be a bug with the cookie api)
-- provide some default `actions` for all auth methods that can be implemented ssr only (don´t rely on the url hash)
+- provide custom enhance submit functions like `use:enhance={supabaseLogout}`
+- provide some default server `actions` for all auth methods that can be implemented ssr only (don´t rely on the url hash)
   - signIn with email/phone
   - signUp with email/phone
   - signOut
