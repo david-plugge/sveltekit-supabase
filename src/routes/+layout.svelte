@@ -9,12 +9,27 @@
 	});
 </script>
 
-{#if $page.data.session.user}
-	<form action="/logout" method="post" use:enhanceAndInvalidate>
-		<button type="submit">Sign out</button>
-	</form>
-{:else}
-	<a href="/signin">Sign in</a>
-{/if}
+<nav>
+	<a href="/">Home</a>
+	{#if $page.data.session.user}
+		<form action="/logout" method="post" use:enhanceAndInvalidate>
+			<button type="submit">Sign out</button>
+		</form>
+	{:else}
+		<a href="/signin">Sign in</a>
+	{/if}
+</nav>
 
-<slot />
+<main>
+	<slot />
+</main>
+
+<style>
+	nav {
+		display: flex;
+		gap: 0.5em;
+	}
+	main {
+		margin-top: 2em;
+	}
+</style>
