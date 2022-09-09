@@ -30,4 +30,4 @@ This makes sense since any data currently displayed may not belong to the user a
   - signIn with email/phone
   - signUp with email/phone
   - signOut
-- use [`invalidate('sb:auth')`](https://kit.svelte.dev/docs/modules#$app-navigation-invalidate) and [`depends('sb:auth')`](https://kit.svelte.dev/docs/load#input-methods-depends) to only force reloading authenticated data (not sure it this is necessary, needs some testing)
+- use [`invalidate('sb:auth')`](https://kit.svelte.dev/docs/modules#$app-navigation-invalidate) and [`depends('sb:auth')`](https://kit.svelte.dev/docs/load#input-methods-depends) to only force reloading authenticated data (not sure if this is necessary, needs some testing)
