@@ -1,5 +1,6 @@
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 import type { Handle, RequestEvent } from '@sveltejs/kit';
+import { getServerConfig } from '../config';
 import { deleteSession, saveSession } from '../helpers';
 
 interface PostBody {
@@ -25,8 +26,11 @@ export async function handleCallbackSession({ cookies, request }: RequestEvent) 
 }
 
 export default function callback(): Handle {
+	const { endpointPrefix } = getServerConfig();
+	const endpointPath = `${endpointPrefix}/callback`;
+
 	return async ({ resolve, event }) => {
-		if (event.url.pathname !== '/api/auth/callback') {
+		if (event.url.pathname !== endpointPath) {
 			return resolve(event);
 		}
 

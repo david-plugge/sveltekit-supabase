@@ -1,4 +1,6 @@
-import type { CookieOptions } from './server/types';
+import type { CookieOptions } from './types';
+
+export const ENDPOINT_PREFIX = '/api/auth';
 
 export const TOKEN_REFRESH_MARGIN = 10;
 

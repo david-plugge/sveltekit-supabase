@@ -4,20 +4,22 @@ import { page } from '$app/stores';
 import type { AuthChangeEvent, SupabaseClient, User } from '@supabase/supabase-js';
 import { onMount } from 'svelte';
 import { setClientConfig, getClientConfig } from './config';
-import { TOKEN_REFRESH_MARGIN } from './constants';
+import { ENDPOINT_PREFIX, TOKEN_REFRESH_MARGIN } from './constants';
 
 interface Options {
 	supabaseClient: SupabaseClient;
 	tokenRefreshMargin?: number;
+	endpointPrefix?: string;
 }
 
 const HANDLE_EVENTS: AuthChangeEvent[] = ['SIGNED_IN', 'SIGNED_OUT'];
 
 export function setupSupabase({
 	supabaseClient,
-	tokenRefreshMargin = TOKEN_REFRESH_MARGIN
+	tokenRefreshMargin = TOKEN_REFRESH_MARGIN,
+	endpointPrefix = ENDPOINT_PREFIX
 }: Options) {
-	setClientConfig({ supabaseClient, tokenRefreshMargin });
+	setClientConfig({ supabaseClient, tokenRefreshMargin, endpointPrefix });
 }
 
 export function startSupabaseSessionSync() {

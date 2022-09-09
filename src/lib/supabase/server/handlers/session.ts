@@ -25,7 +25,7 @@ export default function session(): Handle {
 			const timeNow = Math.round(Date.now() / 1000);
 
 			if (jwt.exp < timeNow + tokenRefreshMargin) {
-				const refreshToken = cookies.get('sb-refresh-token');
+				const refreshToken = cookies.get(`${cookieName}-refresh-token`);
 				if (!refreshToken) {
 					throw 'RefreshTokenNotFound';
 				}

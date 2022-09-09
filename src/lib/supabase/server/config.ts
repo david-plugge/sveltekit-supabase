@@ -1,4 +1,4 @@
-import type { ServerConfig } from './types';
+import type { ServerConfig } from '../types';
 
 let config: ServerConfig;
 
