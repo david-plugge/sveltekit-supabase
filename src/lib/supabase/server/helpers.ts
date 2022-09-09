@@ -1,28 +1,27 @@
 import type { Session } from '@supabase/supabase-js';
 import type { Cookies } from '@sveltejs/kit';
-import type { CookieOptions } from '../types';
-import { getSingleton } from '../singleton';
+import { getServerConfig } from './config';
 
 export function saveSession(cookies: Cookies, session: Session) {
-	const cookie_options = getSingleton('cookieOptions') as CookieOptions;
+	const { cookieName, cookieOptions } = getServerConfig();
 
 	if (session.access_token) {
-		cookies.set('sb-access-token', session.access_token, cookie_options);
+		cookies.set(`${cookieName}-access-token`, session.access_token, cookieOptions);
 	}
 	if (session.refresh_token) {
-		cookies.set('sb-refresh-token', session.refresh_token, cookie_options);
+		cookies.set(`${cookieName}-refresh-token`, session.refresh_token, cookieOptions);
 	}
 	if (session.provider_token) {
-		cookies.set('sb-provider-token', session.provider_token, cookie_options);
+		cookies.set(`${cookieName}-provider-token`, session.provider_token, cookieOptions);
 	}
 }
 
 export function deleteSession(cookies: Cookies) {
-	const cookie_options = getSingleton('cookieOptions') as CookieOptions;
+	const { cookieName, cookieOptions } = getServerConfig();
 
-	['sb-access-token', 'sb-refresh-token', 'sb-provider-token'].forEach((name) => {
-		cookies.set(name, '', {
-			...cookie_options,
+	['access', 'refresh', 'provider'].forEach((name) => {
+		cookies.set(`${cookieName}-${name}-token`, '', {
+			...cookieOptions,
 			maxAge: -1
 		});
 	});

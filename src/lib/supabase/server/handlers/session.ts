@@ -1,26 +1,16 @@
 import type { Handle } from '@sveltejs/kit';
 import { decodeJwt } from 'jose';
-import type { SupabaseClient, User } from '@supabase/supabase-js';
-import { COOKIE_OPTIONS, TOKEN_REFRESH_MARGIN } from '../../constants';
-import type { CookieOptions } from '../../types';
+import type { User } from '@supabase/supabase-js';
+import { getServerConfig } from '../config';
+import { saveSession } from '../helpers';
 
-interface Options {
-	supabaseClient: SupabaseClient;
-	tokenRefreshMargin?: number;
-	cookieOptions?: CookieOptions;
-}
-
-export default function session({
-	supabaseClient,
-	cookieOptions,
-	tokenRefreshMargin = TOKEN_REFRESH_MARGIN
-}: Options): Handle {
-	const cookie_options = { ...COOKIE_OPTIONS, ...cookieOptions };
+export default function session(): Handle {
+	const { supabaseClient, cookieName, tokenRefreshMargin } = getServerConfig();
 
 	return async ({ resolve, event }) => {
 		const { cookies, locals } = event;
 		try {
-			const accessToken = cookies.get('sb-access-token');
+			const accessToken = cookies.get(`${cookieName}-access-token`);
 
 			if (!accessToken) {
 				throw 'AccessTokenNotFound';
@@ -43,10 +33,7 @@ export default function session({
 				if (error || !data) {
 					throw error;
 				}
-				cookies.set('sb-access-token', data.access_token, cookie_options);
-				if (data.refresh_token) {
-					cookies.set('sb-refresh-token', data.refresh_token, cookie_options);
-				}
+				saveSession(cookies, data);
 				locals.user = { ...data.user, exp: data.expires_at } as User;
 				locals.accessToken = accessToken;
 			} else {

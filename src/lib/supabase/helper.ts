@@ -3,7 +3,7 @@ import { applyAction, enhance } from '$app/forms';
 import { invalidateAll } from '$app/navigation';
 import type { SupabaseClient, User } from '@supabase/supabase-js';
 import { redirect } from '@sveltejs/kit';
-import { getSingleton } from './singleton';
+import { getClientConfig } from './config';
 
 export function enhanceAndInvalidate(form: HTMLFormElement) {
 	return enhance(form, () => async ({ result }) => {
@@ -15,7 +15,7 @@ export function enhanceAndInvalidate(form: HTMLFormElement) {
 }
 
 export function supabaseServerClient(access_token: string | null | undefined): SupabaseClient {
-	const supabaseClient = getSingleton('client') as SupabaseClient;
+	const { supabaseClient } = getClientConfig();
 	// no need to set the token on the browser
 	if (!browser && access_token) {
 		supabaseClient?.auth.setAuth(access_token);

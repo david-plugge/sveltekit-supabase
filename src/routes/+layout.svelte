@@ -4,7 +4,7 @@
 	import { supabaseClient } from '$lib/db';
 	import { setupSupabase } from '$lib/supabase';
 
-	setupSupabase(supabaseClient);
+	setupSupabase({ supabaseClient });
 </script>
 
 <script lang="ts">
