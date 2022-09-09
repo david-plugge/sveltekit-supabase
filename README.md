@@ -107,7 +107,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 	import { supabaseClient } from '$lib/db';
 	import { setupSupabase } from '$lib/supabase'; // '@supabase/auth-helpers-sveltekit'
 
-	setupSupabase(supabaseClient);
+	setupSupabase({ supabaseClient });
 </script>
 
 <script lang="ts">
