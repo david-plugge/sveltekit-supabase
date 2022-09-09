@@ -17,12 +17,13 @@ This makes sense since any data currently displayed may not belong to the user a
 
 ## Whats different
 
-- No Svelte `SupaAuthHelper` component
+- No need for a `SupaAuthHelper` component
 - still works when JS fails
--
+- uses SvelteKit´s actions
 
 ## Things to improve
 
+- add a session store to reduce `$page.data.session` to just `$session`
 - move the callback into a hook (not sure why this doesn´t work, seems to be a bug with the cookie api)
 - provide custom enhance submit functions like `use:enhance={supabaseLogout}`
 - provide some default server `actions` for all auth methods that can be implemented ssr only (don´t rely on the url hash)
