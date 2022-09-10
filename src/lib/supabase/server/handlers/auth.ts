@@ -1,10 +1,11 @@
 import { sequence } from '@sveltejs/kit/hooks';
-import callback from './callback';
+// import callback from './callback';
 import session from './session';
 import type { SupabaseClient } from '@supabase/supabase-js';
 import { setServerConfig } from '../config';
 import { COOKIE_OPTIONS, ENDPOINT_PREFIX, TOKEN_REFRESH_MARGIN } from '../../constants';
 import type { CookieOptions } from '../../types';
+import type { Handle } from '@sveltejs/kit';
 
 interface Options {
 	supabaseClient: SupabaseClient;
@@ -20,7 +21,7 @@ export default function auth({
 	cookieOptions = {},
 	tokenRefreshMargin = TOKEN_REFRESH_MARGIN,
 	endpointPrefix = ENDPOINT_PREFIX
-}: Options) {
+}: Options): Handle {
 	setServerConfig({
 		supabaseClient,
 		cookieName,
@@ -29,5 +30,8 @@ export default function auth({
 		endpointPrefix
 	});
 
-	return sequence(callback(), session());
+	return sequence(
+		// callback(),
+		session()
+	);
 }
