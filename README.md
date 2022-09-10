@@ -1,5 +1,7 @@
 # Supabase Auth helpers for SvelteKit
 
+**! this repo is mainly for brainstorming, i don´t plan to release a package on npm !**
+
 ## How to run it
 
 1. clone this repo `git clone https://github.com/david-plugge/supabase-auth-helpers-sk-new-api.git`
