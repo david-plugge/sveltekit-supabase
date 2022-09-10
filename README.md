@@ -21,19 +21,23 @@ If you don´t care about non JS situations you can just ignore actions and use t
 
 - No need for a `SupaAuthHelper` component
 - still works when JS fails
-- can use SvelteKit´s actions
+- integrates nicely with SvelteKit´s actions
 
 ## Things to improve
 
-- [x] add `supabaseServerClient()`
-- [x] provide some helpers
+- [x] helpers
+  - [x] `supabaseServerClient(session.accessToken)`
   - [x] `saveSession(cookies, session)`
   - [x] `clearSession(cookies)`
-- [x] provide custom enhance functions
-  - [x] `use:enhanceAndInvalidate` - invalidates the page if its a redirect ur success type
-- [x] move the callback into a hook (not sure why this doesn´t work, seems to be a bug with the cookie api)
-- [ ] add a session store to reduce `$page.data.session` to just `$session`
+  - [x] `loadWithSession(...)`
+  - [x] `serverLoadWithSession(...)`
+  - [x] `serverWithSession(...)`
+- [x] custom enhance functions
+  - [x] `use:enhanceAndInvalidate` - invalidates the page if it´s a redirect ur success type
+- [ ] move the callback into a hook (not sure why this doesn´t work, seems to be a bug with the cookie api)
 - [ ] use [`invalidate('sb:auth')`](https://kit.svelte.dev/docs/modules#$app-navigation-invalidate) and [`depends('sb:auth')`](https://kit.svelte.dev/docs/load#input-methods-depends) to only force reloading authenticated data (not sure if this is necessary, needs some testing)
+- [ ] allow customizing the session location (something else than `locals.user` and `$page.data.session`)
+- [ ] add a session store to reduce `$page.data.session` to just `$session`
 
 ## Minimal setup
 
@@ -107,6 +111,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 	import { supabaseClient } from '$lib/db';
 	import { setupSupabase } from '$lib/supabase'; // '@supabase/auth-helpers-sveltekit'
 
+	// set the supabase instance so it can be used in helpers
 	setupSupabase({ supabaseClient });
 </script>
 
@@ -114,6 +119,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 	import { page } from '$app/stores';
 	import { startSupabaseSessionSync, enhanceAndInvalidate } from '$lib/supabase'; // '@supabase/auth-helpers-sveltekit'
 
+	// sync session and refresh data when necessary
 	startSupabaseSessionSync();
 </script>
 
