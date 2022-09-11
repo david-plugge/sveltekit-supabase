@@ -10,7 +10,7 @@
 		"supabase:start": "docker compose -f supabase/docker-compose.yml up -d",
 		"supabase:stop": "docker compose -f supabase/docker-compose.yml down",
 		"stripe:start": "docker compose -f stripe/docker-compose.yml up -d",
-		"stripe:stop": "docker compose -f stripe/docker-compose.yml up down",
+		"stripe:stop": "docker compose -f stripe/docker-compose.yml down",
 		"dev:start": "pnpm supabase:start && pnpm stripe:start",
 		"dev:stop": "pnpm supabase:stop && pnpm stripe:stop",
 		"dev": "vite dev --port 3000",
