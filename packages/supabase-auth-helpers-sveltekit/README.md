@@ -4,13 +4,9 @@
 
 ## How to run it
 
-1. clone this repo `git clone https://github.com/david-plugge/supabase-auth-helpers-sk-new-api.git`
-2. create a supabase project at https://app.supabase.com/
-3. rename or copy `.env.example` to `.env` file and update the variables
-4. run `pnpm install`
-5. run `pnpm dev`
+Copy all contents inside [_src/package_](src/package/) into a folder in your project eg. _src/lib/supabase_.
 
-Disable JavaScript and see that signin/signup/logout still works
+All imports used in this repo will then have to be replaced to match the path in your project.
 
 ## How it works
 
