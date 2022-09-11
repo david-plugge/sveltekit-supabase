@@ -5,6 +5,8 @@
     "scripts": {
         "dev:stripe": "turbo run dev --filter sveltekit-supabase-stripe",
         "build:stripe": "turbo run build --filter sveltekit-supabase-stripe",
+        "dev:adyen": "turbo run dev --filter sveltekit-supabase-adyen",
+        "build:adyen": "turbo run build --filter sveltekit-supabase-adyen",
         "dev:supabase-auth-helpers": "turbo run dev --filter supabase-auth-helpers-sveltekit",
         "build:supabase-auth-helpers": "turbo run build --filter supabase-auth-helpers-sveltekit",
         "build": "turbo run build",

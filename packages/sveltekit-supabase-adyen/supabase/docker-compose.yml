@@ -1,0 +1,181 @@
+version: '3.8'
+
+networks:
+    supabase:
+
+services:
+    studio:
+        container_name: ${COMPOSE_PROJECT_NAME}-supabase-studio
+        image: supabase/studio:latest
+        restart: unless-stopped
+        environment:
+            STUDIO_PG_META_URL: http://meta:8080
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+            SUPABASE_URL: http://kong:8000
+            SUPABASE_REST_URL: ${PUBLIC_REST_URL}
+            SUPABASE_ANON_KEY: ${ANON_KEY}
+            SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY}
+        ports:
+            - ${STUDIO_PORT}:3000/tcp
+        networks:
+            - supabase
+
+    kong:
+        container_name: ${COMPOSE_PROJECT_NAME}-supabase-kong
+        image: kong:2.8
+        restart: unless-stopped
+        environment:
+            KONG_DATABASE: 'off'
+            KONG_DECLARATIVE_CONFIG: /var/lib/kong/kong.yml
+            # https://github.com/supabase/cli/issues/14
+            KONG_DNS_ORDER: LAST,A,CNAME
+            KONG_PLUGINS: request-transformer,cors,key-auth,acl
+        volumes:
+            - ./volumes/api/kong.yml:/var/lib/kong/kong.yml
+        ports:
+            - ${KONG_HTTP_PORT}:8000/tcp
+            # - ${KONG_HTTPS_PORT}:8443/tcp
+        networks:
+            - supabase
+
+    auth:
+        container_name: ${COMPOSE_PROJECT_NAME}-supabase-auth
+        image: supabase/gotrue:v2.16.2
+        restart: unless-stopped
+        depends_on:
+            - db
+        networks:
+            - supabase
+        environment:
+            GOTRUE_API_HOST: 0.0.0.0
+            GOTRUE_API_PORT: 9999
+
+            GOTRUE_DB_DRIVER: postgres
+            GOTRUE_DB_DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}?search_path=auth
+
+            API_EXTERNAL_URL: ${SITE_URL}
+            GOTRUE_SITE_URL: ${SITE_URL}
+            GOTRUE_URI_ALLOW_LIST: ${ADDITIONAL_REDIRECT_URLS}
+            GOTRUE_DISABLE_SIGNUP: ${DISABLE_SIGNUP}
+
+            GOTRUE_JWT_ADMIN_ROLES: service_role
+            GOTRUE_JWT_AUD: authenticated
+            GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
+            GOTRUE_JWT_EXP: ${JWT_EXPIRY}
+            GOTRUE_JWT_SECRET: ${JWT_SECRET}
+
+            GOTRUE_EXTERNAL_EMAIL_ENABLED: ${ENABLE_EMAIL_SIGNUP}
+            GOTRUE_MAILER_AUTOCONFIRM: ${ENABLE_EMAIL_AUTOCONFIRM}
+            GOTRUE_SMTP_ADMIN_EMAIL: ${SMTP_ADMIN_EMAIL}
+            GOTRUE_SMTP_HOST: ${SMTP_HOST}
+            GOTRUE_SMTP_PORT: ${SMTP_PORT}
+            GOTRUE_SMTP_USER: ${SMTP_USER}
+            GOTRUE_SMTP_PASS: ${SMTP_PASS}
+            GOTRUE_SMTP_SENDER_NAME: ${SMTP_SENDER_NAME}
+            GOTRUE_MAILER_URLPATHS_INVITE: /auth/v1/verify
+            GOTRUE_MAILER_URLPATHS_CONFIRMATION: /auth/v1/verify
+            GOTRUE_MAILER_URLPATHS_RECOVERY: /auth/v1/verify
+            GOTRUE_MAILER_URLPATHS_EMAIL_CHANGE: /auth/v1/verify
+
+            GOTRUE_EXTERNAL_PHONE_ENABLED: ${ENABLE_PHONE_SIGNUP}
+            GOTRUE_SMS_AUTOCONFIRM: ${ENABLE_PHONE_AUTOCONFIRM}
+
+    rest:
+        container_name: ${COMPOSE_PROJECT_NAME}-supabase-rest
+        image: postgrest/postgrest:v10.0.0
+        restart: unless-stopped
+        depends_on:
+            - db
+        networks:
+            - supabase
+        environment:
+            PGRST_DB_URI: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+            PGRST_DB_SCHEMA: ${PGRST_DB_SCHEMAS}
+            PGRST_DB_ANON_ROLE: anon
+            PGRST_JWT_SECRET: ${JWT_SECRET}
+            PGRST_DB_USE_LEGACY_GUCS: 'false'
+
+    realtime:
+        container_name: ${COMPOSE_PROJECT_NAME}-supabase-realtime
+        image: supabase/realtime:v0.24.2
+        restart: unless-stopped
+        depends_on:
+            - db
+        networks:
+            - supabase
+        environment:
+            DB_HOST: ${POSTGRES_HOST}
+            DB_PORT: ${POSTGRES_PORT}
+            DB_NAME: ${POSTGRES_DB}
+            DB_USER: ${POSTGRES_USER}
+            DB_PASSWORD: ${POSTGRES_PASSWORD}
+            DB_SSL: 'false'
+            PORT: 4000
+            JWT_SECRET: ${JWT_SECRET}
+            REPLICATION_MODE: RLS
+            REPLICATION_POLL_INTERVAL: 100
+            SECURE_CHANNELS: 'true'
+            SLOT_NAME: supabase_realtime_rls
+            TEMPORARY_SLOT: 'true'
+        command: >
+            bash -c "./prod/rel/realtime/bin/realtime eval Realtime.Release.migrate
+            && ./prod/rel/realtime/bin/realtime start"
+
+    storage:
+        container_name: ${COMPOSE_PROJECT_NAME}-supabase-storage
+        image: supabase/storage-api:v0.20.2
+        restart: unless-stopped
+        depends_on:
+            - db
+            - rest
+        networks:
+            - supabase
+        environment:
+            ANON_KEY: ${ANON_KEY}
+            SERVICE_KEY: ${SERVICE_ROLE_KEY}
+            POSTGREST_URL: http://rest:3000
+            PGRST_JWT_SECRET: ${JWT_SECRET}
+            DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}
+            PGOPTIONS: -c search_path=storage,public
+            FILE_SIZE_LIMIT: 52428800
+            STORAGE_BACKEND: file
+            FILE_STORAGE_BACKEND_PATH: /var/lib/storage
+            TENANT_ID: stub
+            # TODO: https://github.com/supabase/storage-api/issues/55
+            REGION: stub
+            GLOBAL_S3_BUCKET: stub
+        volumes:
+            - ./volumes/storage:/var/lib/storage
+
+    meta:
+        container_name: ${COMPOSE_PROJECT_NAME}-supabase-meta
+        image: supabase/postgres-meta:v0.45.0
+        depends_on:
+            - db
+        networks:
+            - supabase
+        restart: unless-stopped
+        environment:
+            PG_META_PORT: 8080
+            PG_META_DB_HOST: ${POSTGRES_HOST}
+            PG_META_DB_PORT: ${POSTGRES_PORT}
+            PG_META_DB_NAME: ${POSTGRES_DB}
+            PG_META_DB_USER: ${POSTGRES_USER}
+            PG_META_DB_PASSWORD: ${POSTGRES_PASSWORD}
+
+    db:
+        container_name: ${COMPOSE_PROJECT_NAME}-supabase-db
+        # image: registry.gitlab.com/david-plugge/supabase-postgres:14.1.0.34 # arm
+        image: supabase/postgres:14.1.0.66
+        command: postgres -c config_file=/etc/postgresql/postgresql.conf
+        restart: unless-stopped
+        ports:
+            - ${POSTGRES_PORT}:5432
+        networks:
+            - supabase
+        environment:
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+        volumes:
+            - ./volumes/db/data:/var/lib/postgresql/data
+            - ./volumes/db/init:/docker-entrypoint-initdb.d
