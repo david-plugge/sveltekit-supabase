@@ -6,6 +6,7 @@ import { setServerConfig } from '../config';
 import { COOKIE_OPTIONS, ENDPOINT_PREFIX, TOKEN_REFRESH_MARGIN } from '../../constants';
 import type { CookieOptions } from '../../types';
 import type { Handle } from '@sveltejs/kit';
+import { setClientConfig } from '../../config';
 
 interface Options {
 	supabaseClient: SupabaseClient;
@@ -22,6 +23,11 @@ export default function auth({
 	tokenRefreshMargin = TOKEN_REFRESH_MARGIN,
 	endpointPrefix = ENDPOINT_PREFIX
 }: Options): Handle {
+	setClientConfig({
+		supabaseClient,
+		tokenRefreshMargin,
+		endpointPrefix
+	});
 	setServerConfig({
 		supabaseClient,
 		cookieName,

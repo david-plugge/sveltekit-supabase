@@ -1,4 +1,4 @@
-import { supabaseServerClient, loadWithSession } from '$lib/supabase';
+import { supabaseServerClient, loadWithSession } from 'supabase-auth-helpers-sveltekit';
 import { error } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 

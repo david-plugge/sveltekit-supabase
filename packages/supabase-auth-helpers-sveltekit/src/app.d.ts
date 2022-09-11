@@ -15,5 +15,6 @@ declare namespace App {
 	interface PageData {
 		session: SupabaseSession;
 	}
+	// interface PageError {}
 	// interface Platform {}
 }

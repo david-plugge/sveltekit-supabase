@@ -1,4 +1,3 @@
-import { browser } from '$app/environment';
 import { applyAction, enhance } from '$app/forms';
 import { invalidateAll } from '$app/navigation';
 import type { SupabaseClient } from '@supabase/supabase-js';
@@ -17,7 +16,7 @@ export function enhanceAndInvalidate(form: HTMLFormElement) {
 export function supabaseServerClient(access_token: string | null | undefined): SupabaseClient {
 	const { supabaseClient } = getClientConfig();
 	// no need to set the token on the browser
-	if (!browser && access_token) {
+	if (access_token) {
 		supabaseClient?.auth.setAuth(access_token);
 	}
 	return supabaseClient;

@@ -8,7 +8,17 @@ const config = {
 	preprocess: preprocess(),
 
 	kit: {
-		adapter: adapter()
+		adapter: adapter(),
+		alias: {
+			'supabase-auth-helpers-sveltekit': 'src/package'
+		}
+	},
+	package: {
+		source: 'src/package',
+		dir: 'dist',
+		exports(filepath) {
+			return ['index.ts', 'server/index.ts'].includes(filepath);
+		}
 	}
 };
 

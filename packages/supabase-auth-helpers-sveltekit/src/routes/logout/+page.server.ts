@@ -1,4 +1,4 @@
-import { deleteSession } from '$lib/supabase/server';
+import { deleteSession } from 'supabase-auth-helpers-sveltekit/server';
 import { redirect } from '@sveltejs/kit';
 import type { Actions } from './$types';
 
