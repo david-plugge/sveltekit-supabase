@@ -2,6 +2,7 @@
 
 ## Packages
 
-| Package                                                   |
-| --------------------------------------------------------- |
-| [auth-helpers](packages/supabase-auth-helpers-sveltekit/) |
+| Package                                                          |
+| ---------------------------------------------------------------- |
+| [auth-helpers](packages/supabase-auth-helpers-sveltekit/)        |
+| [sveltekit-supabase-stripe](packages/sveltekit-supabase-stripe/) |
