@@ -3,8 +3,8 @@
     "version": "0.0.0",
     "private": true,
     "scripts": {
-        "dev:stripe": "turbo run dev --filter sveltekit-supabase-stripe",
-        "build:stripe": "turbo run build --filter sveltekit-supabase-stripe",
+        "dev:sveltekit-supabase-stripe": "turbo run dev --filter sveltekit-supabase-stripe",
+        "build:sveltekit-supabase-stripe": "turbo run build --filter sveltekit-supabase-stripe",
         "dev:supabase-auth-helpers": "turbo run dev --filter supabase-auth-helpers-sveltekit",
         "build:supabase-auth-helpers": "turbo run build --filter supabase-auth-helpers-sveltekit",
         "build": "turbo run build",
