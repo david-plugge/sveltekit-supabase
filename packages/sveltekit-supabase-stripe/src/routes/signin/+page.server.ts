@@ -1,7 +1,7 @@
 import type { Actions } from './$types';
 import { supabaseClient } from '$lib/db';
 import { invalid, redirect } from '@sveltejs/kit';
-import { saveSession } from 'supabase-auth-helpers-sveltekit/server';
+import { saveSession } from 'sveltekit-supabase-auth/server';
 
 export const actions: Actions = {
 	async signin({ request, cookies }) {

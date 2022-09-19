@@ -1,5 +1,5 @@
 import type { Price, Product, Subscription } from '$lib/types';
-import { loadWithSession, supabaseServerClient } from 'supabase-auth-helpers-sveltekit';
+import { loadWithSession, supabaseServerClient } from 'sveltekit-supabase-auth';
 import type { PageLoad } from './$types';
 
 type ProductWithPrices = Product & { prices: Price[] };

@@ -10,7 +10,7 @@ const config = {
 	kit: {
 		adapter: adapter(),
 		alias: {
-			'supabase-auth-helpers-sveltekit': 'src/package'
+			'sveltekit-supabase-auth': 'src/package'
 		}
 	},
 	package: {

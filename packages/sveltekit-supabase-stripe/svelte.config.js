@@ -15,7 +15,8 @@ const config = {
 		adapter: adapter()
 	},
 	package: {
-		source: 'src/package'
+		source: 'src/package',
+		dir: 'dist'
 	}
 };
 

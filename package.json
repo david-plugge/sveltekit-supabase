@@ -5,18 +5,17 @@
     "scripts": {
         "dev:sveltekit-supabase-stripe": "turbo run dev --filter sveltekit-supabase-stripe",
         "build:sveltekit-supabase-stripe": "turbo run build --filter sveltekit-supabase-stripe",
-        "dev:supabase-auth-helpers": "turbo run dev --filter supabase-auth-helpers-sveltekit",
-        "build:supabase-auth-helpers": "turbo run build --filter supabase-auth-helpers-sveltekit",
+        "dev:sveltekit-supabase-auth": "turbo run dev --filter sveltekit-supabase-auth",
+        "build:sveltekit-supabase-auth": "turbo run build --filter sveltekit-supabase-auth",
         "build": "turbo run build",
         "lint": "turbo run lint",
         "format": "turbo run format"
     },
     "devDependencies": {
-        "turbo": "latest"
+        "turbo": "^1.4.7"
     },
     "engines": {
         "node": ">=14.0.0"
     },
-    "dependencies": {},
     "packageManager": "pnpm@7.11.0"
 }
