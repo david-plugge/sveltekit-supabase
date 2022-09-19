@@ -2,7 +2,7 @@ import type { Price, Product, Subscription } from '$lib/types';
 import { loadWithSession, supabaseServerClient } from 'supabase-auth-helpers-sveltekit';
 import type { PageLoad } from './$types';
 
-type ProducWithPrices = Product & { prices: Price[] };
+type ProductWithPrices = Product & { prices: Price[] };
 
 export const load: PageLoad = loadWithSession(
 	{ status: 303, location: '/signin' },
@@ -25,12 +25,12 @@ export const load: PageLoad = loadWithSession(
 		if (productsError) {
 			console.log(productsError);
 			return {
-				products: [] as ProducWithPrices[]
+				products: [] as ProductWithPrices[]
 			};
 		}
 
 		return {
-			products: products as ProducWithPrices[],
+			products: products as ProductWithPrices[],
 			subscription
 		};
 	}
