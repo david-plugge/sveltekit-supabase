@@ -1,6 +1,4 @@
-# Supabase Auth helpers for SvelteKit
-
-**! this repo is mainly for brainstorming, i don´t plan to release a package on npm !**
+# SvelteKit Supabase Auth
 
 ## How to run it
 
@@ -77,7 +75,7 @@ export const supabaseClient = createClient(PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_
 ```ts
 import { dev } from '$app/environment';
 import { supabaseClient } from '$lib/db';
-import { auth } from '$lib/supabase/server'; // '@supabase/auth-helpers-sveltekit/server'
+import { auth } from '$lib/supabase/server';
 
 export const handle = auth({
 	supabaseClient,
@@ -107,7 +105,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 ```html
 <script lang="ts" context="module">
 	import { supabaseClient } from '$lib/db';
-	import { setupSupabase } from '$lib/supabase'; // '@supabase/auth-helpers-sveltekit'
+	import { setupSupabase } from '$lib/supabase';
 
 	// set the supabase instance so it can be used in helpers
 	setupSupabase({ supabaseClient });
@@ -115,7 +113,7 @@ export const load: LayoutServerLoad = async ({ locals }) => {
 
 <script lang="ts">
 	import { page } from '$app/stores';
-	import { startSupabaseSessionSync, enhanceAndInvalidate } from '$lib/supabase'; // '@supabase/auth-helpers-sveltekit'
+	import { startSupabaseSessionSync, enhanceAndInvalidate } from '$lib/supabase';
 
 	// sync session and refresh data when necessary
 	startSupabaseSessionSync();
