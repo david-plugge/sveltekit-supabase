@@ -1,5 +1,7 @@
 # SvelteKit Supabase Auth
 
+**!! This package is not up to date, have a look at [supabase auth helpers](https://github.com/supabase/auth-helpers/tree/main/packages/sveltekit) !!**
+
 ## How to run it
 
 Copy all contents inside [_src/package_](src/package/) into a folder in your project eg. _src/lib/supabase_.
